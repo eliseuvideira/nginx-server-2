@@ -1,4 +1,4 @@
-exports.makeconfig = (domain, location) =>
+exports.makeConfig = (domain, location) =>
   `
 server {
   listen 80;
