@@ -1,37 +1,58 @@
 const { Command } = require("commander");
-const fs = require("fs-extra");
-const { NGINX_DIR } = require("../utils/constants");
+const { mkdirpSync, copyFileSync } = require("fs-extra");
 const path = require("path");
-const { createDummyCert } = require("../functions/createDummyCert");
-const { ssl } = require("../functions/ssl");
+const {
+  NGINX_DIR,
+  CERTBOT_DIR,
+  NGINX_DOMAINS_DIR,
+  CERTBOT_CONFIG_DIR,
+  TEMPLATES_DIR,
+} = require("../utils/constants");
 
 const program = new Command();
 
-exports.init = program.command("init").action(async () => {
-  await createDummyCert("default_server");
+const makeDirectories = () => {
+  mkdirpSync(NGINX_DIR);
+  mkdirpSync(NGINX_DOMAINS_DIR);
+  mkdirpSync(CERTBOT_DIR);
+  mkdirpSync(CERTBOT_CONFIG_DIR);
+};
 
-  await fs.mkdirp(NGINX_DIR);
+const copyNginxConf = () => {
+  const TEMPLATE_DEFAULT_CONF = path.join(TEMPLATES_DIR, "default.conf");
+  const DEFAULT_CONF = path.join(NGINX_DIR, "default.conf");
 
-  const config = `
-    server_tokens off;
+  copyFileSync(TEMPLATE_DEFAULT_CONF, DEFAULT_CONF);
+};
 
-    include /etc/nginx/conf.d/domains/*.conf;
+const copyOptionsSslNginx = () => {
+  const TEMPLATE_OPTIONS_SSL_NGINX = path.join(
+    TEMPLATES_DIR,
+    "options-ssl-nginx.conf"
+  );
+  const OPTIONS_SSL_NGINX = path.join(
+    CERTBOT_CONFIG_DIR,
+    "options-ssl-nginx.conf"
+  );
 
-    server {
-      listen 80 default_server;
-      listen 443 default_server;
-      listen [::]:80 default_server;
-      listen [::]:443 default_server;
-      server_name "";
-      ssl_certificate /etc/letsencrypt/live/default_server/fullchain.pem;
-      ssl_certificate_key /etc/letsencrypt/live/default_server/privkey.pem;
-      return 444;
-    }
-  `;
+  copyFileSync(TEMPLATE_OPTIONS_SSL_NGINX, OPTIONS_SSL_NGINX);
+};
 
-  const configFile = path.join(NGINX_DIR, "default.conf");
+const copySslDhparams = () => {
+  const TEMPLATE_SSL_DHPARAMS = path.join(TEMPLATES_DIR, "ssl-dhparams.pem");
+  const SSL_DHPARAMS = path.join(CERTBOT_CONFIG_DIR, "ssl-dhparams.pem");
 
-  await fs.writeFile(configFile, config.replace(/^    /gm, "").trim() + "\n");
+  copyFileSync(TEMPLATE_SSL_DHPARAMS, SSL_DHPARAMS);
+};
 
-  ssl();
+const init = program.command("init").action(() => {
+  makeDirectories();
+
+  copyNginxConf();
+
+  copyOptionsSslNginx();
+
+  copySslDhparams();
 });
+
+module.exports = init;

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 const commander = require("commander");
-const { init } = require("./commands/init");
+const init = require("./commands/init");
 const { proxy } = require("./commands/proxy");
 const { NAME, VERSION } = require("./utils/constants");
 
