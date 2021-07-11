@@ -1,5 +1,5 @@
 {
-  "name": "cert",
+  "name": "nginx",
   "version": "0.1.0",
   "main": "index.js",
   "author": "Eliseu Videira <eliseuvideira1@gmail.com>",
@@ -11,6 +11,6 @@
     "rimraf": "^3.0.2"
   },
   "scripts": {
-    "cert": "node src/index.js"
+    "nginx": "node src/index.js"
   }
 }
