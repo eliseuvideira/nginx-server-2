@@ -52,7 +52,7 @@ const recreateNginx = () => {
   `);
 };
 
-const deleteDummyCert = () => {
+const deleteDummyCert = (domain) => {
   rimraf.sync(path.join(CERTBOT_CONFIG_DIR, "live", domain));
   rimraf.sync(path.join(CERTBOT_CONFIG_DIR, "archive", domain));
   rimraf.sync(path.join(CERTBOT_CONFIG_DIR, "renewal", domain + ".conf"));
@@ -87,7 +87,7 @@ const proxy = program
 
     recreateNginx();
 
-    deleteDummyCert();
+    deleteDummyCert(domain);
 
     startCertbot(domain, email, options.staging);
 
