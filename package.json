@@ -1,7 +1,13 @@
 {
   "name": "nginx-server-2",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "main": "index.js",
   "author": "Eliseu Videira <eliseuvideira1@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^8.0.0"
+  },
+  "scripts": {
+    "cert": "node src/index.js"
+  }
 }
