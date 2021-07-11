@@ -7,7 +7,7 @@ exports.certbot = (domain, email, staging) => {
         ${staging ? "--staging" : ""} \\
         --email "${email}" \\
         -d "${domain}" \\
-        --rsa-key-size $rsa_key_size \\
+        --rsa-key-size 4096 \\
         --agree-tos \\
         --force-renewal" certbot
   `);
