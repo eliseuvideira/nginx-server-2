@@ -7,7 +7,8 @@
   "dependencies": {
     "@ev-fns/spawn": "^0.1.2",
     "commander": "^8.0.0",
-    "fs-extra": "^10.0.0"
+    "fs-extra": "^10.0.0",
+    "rimraf": "^3.0.2"
   },
   "scripts": {
     "cert": "node src/index.js"

@@ -1,8 +1,10 @@
-const fs = require("fs-extra");
-const path = require("path");
 const { Command } = require("commander");
-const { makeConfig } = require("../functions/makeConfig");
-const { DOMAINS_DIR } = require("../utils/constants");
+const { certbot } = require("../functions/certbot");
+const { createDummyCert } = require("../functions/createDummyCert");
+const { createProxyConfig } = require("../functions/createProxyConfig");
+const { deleteDummyCert } = require("../functions/deleteDummyCert");
+const { recreateNginx } = require("../functions/recreateNginx");
+const { reloadNginx } = require("../functions/reloadNginx");
 
 const program = new Command();
 
@@ -14,12 +16,15 @@ exports.proxy = program
   .argument("location", "location to proxy to\t\t\tex: http://localhost:8080")
   .option("-s,--staging", "staging certbot", false)
   .action(async (domain, email, location, options) => {
-    const config = makeConfig(domain, location);
+    createProxyConfig(domain, location);
 
-    await fs.mkdirp(DOMAINS_DIR);
+    await createDummyCert(domain);
 
-    const configpath = path.join(DOMAINS_DIR, domain + ".conf");
-    await fs.writeFile(configpath, config);
+    recreateNginx();
 
-    console.log({ domain, email, location, options });
+    deleteDummyCert(domain);
+
+    certbot(domain, email, options.staging);
+
+    reloadNginx();
   });

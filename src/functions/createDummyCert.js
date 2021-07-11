@@ -4,9 +4,9 @@ const { CERTBOT_CONFIG_DIR } = require("../utils/constants");
 const { spawn } = require("@ev-fns/spawn");
 
 exports.createDummyCert = async (domain) => {
-  const cert_path = path.join(CERTBOT_CONFIG_DIR, "live", domain);
+  const certPath = path.join(CERTBOT_CONFIG_DIR, "live", domain);
 
-  await fs.mkdirp(cert_path);
+  await fs.mkdirp(certPath);
 
   await spawn(`
     openssl req \\
@@ -15,8 +15,8 @@ exports.createDummyCert = async (domain) => {
       -newkey \\
       rsa:4096 \\
       -days 1 \\
-      -keyout '${cert_path}/privkey.pem' \\
-      -out '${cert_path}/fullchain.pem' \\
+      -keyout '${certPath}/privkey.pem' \\
+      -out '${certPath}/fullchain.pem' \\
       -subj '/CN=localhost'
   `);
 };

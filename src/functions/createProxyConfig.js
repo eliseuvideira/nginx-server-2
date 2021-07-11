@@ -1,0 +1,43 @@
+const fs = require("fs-extra");
+const path = require("path");
+const { DOMAINS_DIR } = require("../utils/constants");
+
+exports.createProxyConfig = (domain, location) => {
+  fs.mkdirpSync(DOMAINS_DIR);
+
+  const config = `
+    server {
+      listen 80;
+      listen [::]:80;
+      server_name ${domain};
+      location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+      }
+      return 301 https://$host$request_uri;
+    }
+    
+    server {
+      listen 443 ssl http2;
+      listen [::]:443 ssl http2;
+      server_name ${domain};
+      ssl_certificate /etc/letsencrypt/live/${domain}/fullchain.pem;
+      ssl_certificate_key /etc/letsencrypt/live/${domain}/privkey.pem;
+      client_max_body_size 60M;
+      location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+      }
+      location / {
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header Host $http_host;
+        proxy_pass ${location};
+      }
+      include /etc/nginx/extra-conf.d/*.conf;
+      include /etc/letsencrypt/options-ssl-nginx.conf;
+      ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+    }
+  `;
+
+  const configFile = path.join(DOMAINS_DIR, domain + ".conf");
+
+  fs.writeFileSync(configFile, config.replace(/^    /gm, "").trim() + "\n");
+};
