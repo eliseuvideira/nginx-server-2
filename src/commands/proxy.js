@@ -26,7 +26,7 @@ const copyProxyConfig = (domain, location) => {
   writeFileSync(PROXY_CONFIG, config);
 };
 
-const createDummyCert = () => {
+const createDummyCert = (domain) => {
   const CERT_PATH = path.join(CERTBOT_CONFIG_DIR, "live", domain);
 
   mkdirpSync(CERT_PATH);
