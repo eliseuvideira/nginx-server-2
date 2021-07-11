@@ -3,6 +3,7 @@ const fs = require("fs-extra");
 const { NGINX_DIR } = require("../utils/constants");
 const path = require("path");
 const { createDummyCert } = require("../functions/createDummyCert");
+const { ssl } = require("../functions/ssl");
 
 const program = new Command();
 
@@ -31,4 +32,6 @@ exports.init = program.command("init").action(async () => {
   const configFile = path.join(NGINX_DIR, "default.conf");
 
   await fs.writeFile(configFile, config.replace(/^    /gm, "").trim() + "\n");
+
+  ssl();
 });
