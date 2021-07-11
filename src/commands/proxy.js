@@ -1,6 +1,10 @@
 const { Command } = require("commander");
 const { readFileSync, writeFileSync, mkdirpSync } = require("fs-extra");
-const { NGINX_DOMAINS_DIR, CERTBOT_CONFIG_DIR } = require("../utils/constants");
+const {
+  NGINX_DOMAINS_DIR,
+  CERTBOT_CONFIG_DIR,
+  TEMPLATES_DIR,
+} = require("../utils/constants");
 const path = require("path");
 const selfsigned = require("selfsigned");
 const rimraf = require("rimraf");
