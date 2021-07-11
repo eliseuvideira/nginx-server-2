@@ -8,6 +8,7 @@ const {
 const path = require("path");
 const selfsigned = require("selfsigned");
 const rimraf = require("rimraf");
+const { exec } = require("../functions/exec");
 
 const program = new Command();
 
