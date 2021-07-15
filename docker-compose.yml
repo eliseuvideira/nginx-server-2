@@ -3,9 +3,7 @@ version: "3"
 services:
   nginx:
     image: nginx:alpine
-    ports:
-      - 80:80
-      - 443:443
+    network_mode: host
     restart: always
     volumes:
       - ./nginx:/etc/nginx/conf.d
